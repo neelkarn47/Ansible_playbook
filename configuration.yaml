@@ -1,0 +1,33 @@
+---
+- name: Enforce Desired Configuration
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure NTP is configured
+      block:
+        - name: Install NTP package
+          yum:
+            name: ntp
+            state: present
+
+        - name: Configure NTP
+          copy:
+            src: /path/to/ntp.conf
+            dest: /etc/ntp.conf
+            owner: root
+            group: root
+            mode: '0644'
+
+        - name: Ensure NTP service is running
+          service:
+            name: ntpd
+            state: started
+            enabled: yes
+      rescue:
+        - name: Revert NTP configuration if changed
+          copy:
+            src: /path/to/backup/ntp.conf
+            dest: /etc/ntp.conf
+            owner: root
+            group: root
+            mode: '0644'

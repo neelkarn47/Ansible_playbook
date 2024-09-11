@@ -1,0 +1,22 @@
+---
+- name: Enforce Security Guidelines
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure firewall is enabled and running
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Ensure SELinux is enforcing
+      selinux:
+        policy: targeted
+        state: enforcing
+
+    - name: Ensure password policy is enforced
+      lineinfile:
+        path: /etc/security/pwquality.conf
+        regexp: '^#?minlen'
+        line: 'minlen = 12'
+        state: present

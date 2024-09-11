@@ -1,0 +1,12 @@
+---
+- name: Weekly System Reboots
+  hosts: all
+  become: yes
+  tasks:
+    - name: Schedule weekly reboot
+      cron:
+        name: "Weekly Reboot"
+        minute: "0"
+        hour: "2"
+        day: "7"
+        job: "/sbin/shutdown -r now"
